@@ -57,6 +57,7 @@ make
 4. Run Pytorch wrapper (integrated with NeuroSim)
 
 5. A list of simulation results are expected as below:
+```
    Results lists
    1). Input activity of every layer for each epoch: `input_activity.csv`
    2). Weight distribution parameters (mean and std) of every layer for each epoch: `weight_dist.csv`
@@ -64,7 +65,7 @@ make
    4). Estimation of average loss and accuracy for each epoch: `PythonWrapper_Output.csv`
    5). Estimation of on-chip training system for each epoch: `NeuroSim_Output.csv`
    6). Detailed breakdowns of estimation of on-chip training system for each epoch: `NeuroSim_Results_Each_Epoch/NeuroSim_Breakdown_Epoch_0.csv`, ... `NeuroSim_Results_Each_Epoch/NeuroSim_Breakdown_Epoch_256.csv`
-   
+```   
    
 For the usage of this tool, please refer to the manual.
 
