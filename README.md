@@ -57,7 +57,7 @@ make
 4. Run Pytorch wrapper (integrated with NeuroSim)
 
 5. A list of simulation results are expected as below:
-- Results lists
+
   - Input activity of every layer for each epoch: `input_activity.csv`
   - Weight distribution parameters (mean and std) of every layer for each epoch: `weight_dist.csv`
   - Delta weight distribution parameters (mean and std) of every layer for each epoch: `delta_dist.csv`
