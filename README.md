@@ -57,7 +57,6 @@ make
 4. Run Pytorch wrapper (integrated with NeuroSim)
 
 5. A list of simulation results are expected as below:
-
   - Input activity of every layer for each epoch: `input_activity.csv`
   - Weight distribution parameters (mean and std) of every layer for each epoch: `weight_dist.csv`
   - Delta weight distribution parameters (mean and std) of every layer for each epoch: `delta_dist.csv`
@@ -68,9 +67,7 @@ make
     `NeuroSim_Results_Each_Epoch/NeuroSim_Breakdown_Epoch_1.csv  ... ... `
     `NeuroSim_Results_Each_Epoch/NeuroSim_Breakdown_Epoch_256.csv`
 
-
-
-For the usage of this tool, please refer to the manual.
+6. For the usage of this tool, please refer to the user manual.
 
 ## References related to this tool 
 1. X. Peng, S. Huang, H. Jiang, A. Lu and S. Yu, ※DNN+NeuroSim V2.0: An End-to-End Benchmarking Framework for Compute-in-Memory Accelerators for Training, *§ arXiv *, 2020.
