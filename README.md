@@ -65,8 +65,10 @@ make
   - Estimation of on-chip training system for each epoch: `NeuroSim_Output.csv`
   - Detailed breakdowns of estimation of on-chip training system for each epoch:   
     `NeuroSim_Results_Each_Epoch/NeuroSim_Breakdown_Epoch_0.csv` 
-      ` ... `
+    `NeuroSim_Results_Each_Epoch/NeuroSim_Breakdown_Epoch_1.csv  ... ... `
     `NeuroSim_Results_Each_Epoch/NeuroSim_Breakdown_Epoch_256.csv`
+
+
 
 For the usage of this tool, please refer to the manual.
 
