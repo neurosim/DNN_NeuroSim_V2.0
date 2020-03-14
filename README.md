@@ -4,7 +4,7 @@ The DNN+NeuroSim framework was developed by [Prof. Shimeng Yu's group](https://s
 
 This is the released version 2.0 (Mar 15, 2020) for the tool.
 
-This version introduces **_estimation for on-chip training CIM accelerator_**:
+This V2.0 introduces **_estimation for on-chip training compute-in-memory (CIM) accelerator_**; while the previous V1.1 supported inference engine design only. 
 ```
 1. Include comprehensive hardware for on-chip training, to support feed-forward, error-calculation, 
    weight-gradient-calculation and weight-update.
