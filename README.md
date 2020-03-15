@@ -11,6 +11,7 @@ This V2.0 introduces **_estimation for on-chip training compute-in-memory (CIM) 
 2. Introduce more non-ideal properties of synaptic devices (in addition to V1.1):
    nonlinearity and asysmmetry, cycle-to-cycle and device-to-device variation in weight-update.
 ```
+**_For estimation of inference engine, please visit released V1.1 [DNN+NeuroSim V1.1](https://github.com/neurosim/DNN_NeuroSim_V1.1)_**
 
 In V2.0, we currently only support Pytorch wrapper, where users are able to define **_network structures, parameter precisions and hardware non-ideal properties_**. With the integrated NeuroSim which takes real traces from wrapper, the framework can support hierarchical organization from device level to circuit level, to chip level and to algorithm level, enabling **_instruction-accurate evaluation on both accuracy and hardware performance of on-chip training accelerator_**.
 
