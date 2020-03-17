@@ -27,7 +27,7 @@ This research is supported by NSF CAREER award, NSF/SRC E2CDA program, and ASCEN
 
 If you use the tool or adapt the tool in your work or publication, you are required to cite the following reference:
 
-**_X. Peng, S. Huang, H. Jiang, A. Lu and S. Yu, ※DNN+NeuroSim V2.0: An End-to-End Benchmarking Framework for Compute-in-Memory Accelerators for Training, *§ arXiv *, 2020._**
+**_X. Peng, S. Huang, H. Jiang, A. Lu and S. Yu, ※DNN+NeuroSim V2.0: An End-to-End Benchmarking Framework for Compute-in-Memory Accelerators for Training, *§ arXiv:2003.06471 *, 2020._**
 
 **_X. Peng, S. Huang, Y. Luo, X. Sun and S. Yu, ※DNN+NeuroSim: An End-to-End Benchmarking Framework for Compute-in-Memory Accelerators with Versatile Device Technologies, *§ IEEE International Electron Devices Meeting (IEDM)*, 2019._**
 
