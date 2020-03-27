@@ -194,7 +194,7 @@ void SwitchMatrix::CalculateLatency(double _rampInput, double _capLoad, double _
 	}
 }
 
-void SwitchMatrix::CalculatePower(double numRead, double numWrite) {
+void SwitchMatrix::CalculatePower(double numRead, double numWrite, double activityRowRead, double activityColWrite) {
 	if (!initialized) {
 		cout << "[SwitchMatrix] Error: Require initialization first!" << endl;
 	} else {

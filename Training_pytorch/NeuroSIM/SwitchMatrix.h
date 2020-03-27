@@ -60,7 +60,7 @@ public:
 	void Initialize(int _mode, int _numOutput, double _resTg, bool _neuro, bool _parallelWrite, double _activityRowRead, double _activityColWrite, int _numWriteCellPerOperationMemory, int _numWriteCellPerOperationNeuro, double _numWritePulse, double _clkFreq);
 	void CalculateArea(double _newHeight, double _newWidth, AreaModify _option);
 	void CalculateLatency(double _rampInput, double _capLoad, double _resLoad, double numRead, double numWrite);
-	void CalculatePower(double numRead, double numWrite);
+	void CalculatePower(double numRead, double numWrite, double activityRowRead, double activityColWrite);
 
 	/* Properties */
 	bool initialized;	/* Initialization flag */

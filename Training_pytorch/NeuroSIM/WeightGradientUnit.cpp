@@ -116,7 +116,7 @@ void WeightGradientUnit::Initialize(int _numMemRow, int _numMemCol) {
 		}
 		accumulation.Initialize(numArrayInRow, (log2((double)numRow))+param->numBitInput+1, ceil((double)numArrayInCol*(double)numCol/(double)param->numRowMuxedWG));
 		outPrecision = (log2((double)numRow))+param->numBitInput+accumulation.numStage;
-		//bufferOutput.Initialize((numCol/param->numRowMuxedWG)*(outPrecision), param->clkFreq);
+		
 	} else {
 		wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess, true, false, param->activityRowReadWG, param->activityColWriteWG, numCol, numCol, 1, param->clkFreq);
 		mux.Initialize(ceil(numCol/param->numRowMuxedWG), param->numRowMuxedWG, resCellAccess, false);       
@@ -128,11 +128,10 @@ void WeightGradientUnit::Initialize(int _numMemRow, int _numMemCol) {
 		}
 		accumulation.Initialize(numArrayInRow, log2((double)param->levelOutputWG)+param->numBitInput+1, ceil((double)numArrayInCol*(double)numCol/(double)param->numRowMuxedWG));
 		outPrecision = log2((double)param->levelOutputWG)+param->numBitInput+accumulation.numStage;
-		//bufferOutput.Initialize((numCol/param->numRowMuxedWG)*(outPrecision), param->clkFreq);
+		
 	}	
 	precharger.Initialize(numCol, resCol, param->activityColWriteWG, numCol, numCol);
 	sramWriteDriver.Initialize(numCol, param->activityColWriteWG, numCol);
-	//bufferInput.Initialize(param->numBitInput*numRow, param->clkFreq);
 	
 	initialized = true;
 }
@@ -164,9 +163,8 @@ void WeightGradientUnit::CalculateArea() {  //calculate layout area for total de
 			}
 			areaSubArray = areaArray + wlDecoder.area + precharger.area + sramWriteDriver.area + senseAmp.area + adder.area + dff.area + shiftAdd.area;
 			accumulation.CalculateArea(NULL, (double) sqrt(areaSubArray), NONE);
-			//bufferInput.CalculateArea(numArrayInRow* (double) sqrt(areaSubArray), NULL, NONE);
-			//bufferOutput.CalculateArea(NULL, numArrayInCol* (double) sqrt(areaSubArray), NONE);
-			area = areaSubArray*(numArrayInRow*numArrayInCol) + accumulation.area; // + bufferInput.area + bufferOutput.area;
+
+			area = areaSubArray*(numArrayInRow*numArrayInCol) + accumulation.area; 
 		} else { 
 			wlSwitchMatrix.CalculateArea(heightArray, NULL, NONE);
 			
@@ -182,9 +180,8 @@ void WeightGradientUnit::CalculateArea() {  //calculate layout area for total de
 			}
 			areaSubArray = areaArray + wlSwitchMatrix.area + precharger.area + sramWriteDriver.area + multilevelSenseAmp.area + multilevelSAEncoder.area + shiftAdd.area + mux.area + muxDecoder.area;
 			accumulation.CalculateArea(NULL, (double) sqrt(areaSubArray), NONE);
-			//bufferInput.CalculateArea(numArrayInRow* (double) sqrt(areaSubArray), NULL, NONE);
-			//bufferOutput.CalculateArea(NULL, numArrayInCol* (double) sqrt(areaSubArray), NONE);
-			area = areaSubArray*(numArrayInRow*numArrayInCol) + accumulation.area; // + bufferInput.area + bufferOutput.area;
+			
+			area = areaSubArray*(numArrayInRow*numArrayInCol) + accumulation.area; 
 		} 
 	}
 }
@@ -294,14 +291,11 @@ void WeightGradientUnit::CalculateLatency(int numRead, int numBitDataLoad) {
 			writeLatency += precharger.writeLatency;
 			writeLatency += sramWriteDriver.writeLatency;
 		}
-		//bufferInput.CalculateLatency(0, numBitDataLoad/bufferInput.numDff);
-		//bufferOutput.CalculateLatency(0, numRead*numMemCol*accumulation.numAdderBit/bufferOutput.numDff);
 		
 		readLatency *= numRead;
 		readLatencyPeak = readLatency;
 		writeLatencyPeak = writeLatency;
 		
-		//readLatency += bufferInput.readLatency + bufferOutput.readLatency;
 	}
 }
 
@@ -368,7 +362,7 @@ void WeightGradientUnit::CalculatePower(int numRead, int numBitDataLoad) {
 				columnResistance.push_back((double) 1/columnG);
 			}
 			
-			wlSwitchMatrix.CalculatePower(param->numRowMuxedWG*param->numBitInput, 2*numRow*param->activityRowWriteWG);
+			wlSwitchMatrix.CalculatePower(param->numRowMuxedWG*param->numBitInput, 2*numRow*param->activityRowWriteWG, param->activityRowReadWG, param->activityColWriteWG);
 			precharger.CalculatePower(param->numRowMuxedWG*param->numBitInput, numRow*param->activityRowWriteWG);
 			sramWriteDriver.CalculatePower(numRow*param->activityRowWriteWG);
 			
@@ -408,14 +402,12 @@ void WeightGradientUnit::CalculatePower(int numRead, int numBitDataLoad) {
 			leakage += shiftAdd.leakage;
 		}
 		accumulation.CalculatePower(numRead, numArrayInRow);
-		//bufferInput.CalculatePower(numBitDataLoad/bufferInput.numDff, bufferInput.numDff);
-		//bufferOutput.CalculatePower(numRead*numMemCol*accumulation.numAdderBit/bufferOutput.numDff, bufferOutput.numDff);
 		
 		readDynamicEnergyPeak = readDynamicEnergy*(numArrayInRow*numArrayInCol)*numRead + accumulation.readDynamicEnergy;
 		writeDynamicEnergyPeak = writeDynamicEnergy*(numArrayInRow*numArrayInCol);
 
 		readDynamicEnergy *= (numArrayInRow*numArrayInCol)*numRead;
-		readDynamicEnergy += accumulation.readDynamicEnergy; // + bufferInput.readDynamicEnergy + bufferOutput.readDynamicEnergy;
+		readDynamicEnergy += accumulation.readDynamicEnergy; 
 		writeDynamicEnergy *= (numArrayInRow*numArrayInCol);
 
 		leakage *= (numArrayInRow*numArrayInCol);
