@@ -789,13 +789,13 @@ double GetWriteUpdateEstimation(SubArray *subArray, Technology& tech, MemCell& c
 						int thisPulse = (int)ceil(abs(newMemory[i][j]-oldMemory[i][j])/minDeltaConductance);
 						numSetWritePulse = MAX( numSetWritePulse, thisPulse );
 						// energy in each cell
-						*writeDynamicEnergyArray += cell.writeVoltage * cell.writeVoltage / (abs(1/newMemory[i][j] + 1/oldMemory[i][j])/2) * cell.writePulseWidth * thisPulse;
+						*writeDynamicEnergyArray += cell.writeVoltage * cell.writeVoltage / (abs(1/newMemory[i][j] + 1/oldMemory[i][j])/2) * cell.writePulseWidth * thisPulse *((cell.memCellType == Type::FeFET)==true? 0:1);
 					} else {   // LTD
 						numReset += 1;
 						int thisPulse = (int)ceil(abs(newMemory[i][j]-oldMemory[i][j])/minDeltaConductance);
 						numResetWritePulse = MAX( numResetWritePulse, thisPulse );
 						// energy in each cell
-						*writeDynamicEnergyArray += cell.writeVoltage * cell.writeVoltage / (abs(1/newMemory[i][j] + 1/oldMemory[i][j])/2) * cell.writePulseWidth * thisPulse;
+						*writeDynamicEnergyArray += cell.writeVoltage * cell.writeVoltage / (abs(1/newMemory[i][j] + 1/oldMemory[i][j])/2) * cell.writePulseWidth * thisPulse *((cell.memCellType == Type::FeFET)==true? 0:1);
 					}
 				} else { // no update
 					numSet += 0;
