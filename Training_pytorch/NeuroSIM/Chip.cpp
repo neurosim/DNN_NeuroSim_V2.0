@@ -837,7 +837,7 @@ double ChipCalculatePerformance(Technology& tech, MemCell& cell, int layerNumber
 				int numtileEachLayerRow = ceil((double) netStructure[l][2]*(double) numRowPerSynapse/(double) desiredPESizeNM);
 				int numtileEachLayerCol = ceil((double) netStructure[l][5]*(double) numColPerSynapse/(double) desiredPESizeNM);
 				
-				int numRowMatrix = min(desiredPESizeNM, weightMatrixRow-i*desiredPESizeNM);
+				int numRowMatrix = min(desiredPESizeNM*numPENM, weightMatrixRow-i*desiredPESizeNM*numPENM);
 				int numColMatrix = min(desiredPESizeNM, weightMatrixCol-j*desiredPESizeNM);
 				
 				// assign weight and input to specific tile
