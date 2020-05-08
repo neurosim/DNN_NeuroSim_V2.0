@@ -418,7 +418,7 @@ double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 					Column_Energy += Column_Power*T;
 				}
 			} else {   // technode below and equal to 22nm
-				Column_Energy += Column_Power*1e-9;
+				Column_Energy += Column_Power*1e-9*(levelOutput-1);
 			}
 		}
 	}
