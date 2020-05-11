@@ -1071,10 +1071,10 @@ void Technology::Initialize(int _featureSizeInNano, DeviceRoadmap _deviceRoadmap
 				currentOffNmos[80] = 5.8858e-3 ;
 				currentOffNmos[90] = 8.7624e-3;
 				currentOffNmos[100] =1.28025e-2;
-				currentOffPmos[0]  = 100.9536e-3;
-				currentOffPmos[10] = 201.3937e-3;
-				currentOffPmos[20] = 386.2086e-3;
-				currentOffPmos[30] = 714.4288e-3;
+				currentOffPmos[0]  = 100.9536e-6;
+				currentOffPmos[10] = 201.3937e-6;
+				currentOffPmos[20] = 386.2086e-6;
+				currentOffPmos[30] = 714.4288e-6;
 				currentOffPmos[40] = 1.2788e-3;
 				currentOffPmos[50] = 2.2207e-3;
 				currentOffPmos[60] = 3.7509e-3;
