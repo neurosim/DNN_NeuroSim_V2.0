@@ -1087,7 +1087,7 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 				double gm = CalculateTransconductance(cell.widthAccessCMOS * tech.featureSize, NMOS, tech);
 				double beta = 1 / (resPullDown * gm);
 				double colRamp = 0;
-				colDelay = horowitz(tau, beta, wlDecoder.rampOutput, &colRamp) * numReadOperationPerRow * numRow * numReadPulse * activityRowRead;
+				colDelay = horowitz(tau, beta, wlDecoder.rampOutput, &colRamp) * numReadOperationPerRow * numRow * activityRowRead;
 
 				readLatency = 0;
 				readLatency += wlSwitchMatrix.readLatency;
