@@ -218,7 +218,7 @@ void Buffer::CalculatePower(double numAccessBitRead, double numRead, double numA
 		avgBitWriteDynamicEnergy = writeWholeDynamicEnergy/numBit;
 		
 		readDynamicEnergy = avgBitReadDynamicEnergy*numAccessBitRead*numRead;
-		writeDynamicEnergy = avgBitWriteDynamicEnergy*numAccessBitWrite*numRead;
+		writeDynamicEnergy = avgBitWriteDynamicEnergy*numAccessBitWrite*numWrite;
 	}
 }
 
