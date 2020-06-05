@@ -96,7 +96,7 @@ trained_with_quantization = True
 # for data, target in test_loader:
 for i, (data, target) in enumerate(test_loader):
 	if i==0:
-		hook_handle_list = hook.hardware_evaluation(modelCF,args.wl_weight,args.wl_activate)
+		hook_handle_list = hook.hardware_evaluation(modelCF,args.wl_weight,args.wl_activate,0)
 	indx_target = target.clone()
 	if args.cuda:
 		data, target = data.cuda(), target.cuda()
