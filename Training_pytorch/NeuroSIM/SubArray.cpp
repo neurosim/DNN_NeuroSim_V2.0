@@ -1496,6 +1496,13 @@ void SubArray::CalculatePower(const vector<double> &columnResistance, const vect
 					readDynamicEnergyADC = prechargerBP.readDynamicEnergy + readDynamicEnergyArray + senseAmpBP.readDynamicEnergy;
 					readDynamicEnergyAccum = adderBP.readDynamicEnergy + dffBP.readDynamicEnergy + shiftAddBP.readDynamicEnergy;
 					readDynamicEnergyOther = wlDecoderBP.readDynamicEnergy;
+					
+					leakage += wlDecoderBP.leakage;
+					leakage += prechargerBP.leakage;
+					leakage += adderBP.leakage;
+					leakage += dffBP.leakage;
+					leakage += senseAmpBP.leakage;
+					leakage += shiftAddBP.leakage;
 				}
 				
 				// Write
@@ -1576,6 +1583,14 @@ void SubArray::CalculatePower(const vector<double> &columnResistance, const vect
 						readDynamicEnergyADC = prechargerBP.readDynamicEnergy + readDynamicEnergyArray + multilevelSenseAmpBP.readDynamicEnergy + multilevelSAEncoderBP.readDynamicEnergy;
 						readDynamicEnergyAccum = shiftAddBP.readDynamicEnergy;
 						readDynamicEnergyOther = wlSwitchMatrixBP.readDynamicEnergy + (muxBP.readDynamicEnergy + muxDecoderBP.readDynamicEnergy)/numReadPulse;
+						
+						leakage += wlSwitchMatrixBP.leakage;
+						leakage += prechargerBP.leakage;
+						leakage += multilevelSenseAmpBP.leakage;
+						leakage += multilevelSAEncoderBP.leakage;
+						leakage += muxBP.leakage;
+						leakage += muxDecoderBP.leakage;
+						leakage += shiftAddBP.leakage;
 					} else {
 						int numReadOperationPerCol = numRow / numReadCellPerOperationNeuro;
 						
@@ -1603,6 +1618,13 @@ void SubArray::CalculatePower(const vector<double> &columnResistance, const vect
 						readDynamicEnergyADC = prechargerBP.readDynamicEnergy + readDynamicEnergyArray + senseAmpBP.readDynamicEnergy;
 						readDynamicEnergyAccum = adderBP.readDynamicEnergy + dffBP.readDynamicEnergy + shiftAddBP.readDynamicEnergy;
 						readDynamicEnergyOther = wlSwitchMatrixBP.readDynamicEnergy;
+						
+						leakage += wlSwitchMatrixBP.leakage;
+						leakage += prechargerBP.leakage;
+						leakage += adderBP.leakage;
+						leakage += dffBP.leakage;
+						leakage += senseAmpBP.leakage;
+						leakage += shiftAddBP.leakage;
 					}
 				}
 				
@@ -1728,6 +1750,7 @@ void SubArray::CalculatePower(const vector<double> &columnResistance, const vect
 			}
 			
 	    } else if (cell.memCellType == Type::RRAM || cell.memCellType == Type::FeFET) {
+			leakage = 0;
 			if (conventionalSequential) {
 				double numReadCells = (int)ceil((double)numCol/numColMuxed);    // similar parameter as numReadCellPerOperationNeuro, which is for SRAM
 				double numWriteCells = (int)ceil((double)numCol/*numWriteColMuxed*/); 
@@ -1810,6 +1833,13 @@ void SubArray::CalculatePower(const vector<double> &columnResistance, const vect
 					readDynamicEnergyAccum += dffBP.readDynamicEnergy + adderBP.readDynamicEnergy + shiftAddBP.readDynamicEnergy;
 					readDynamicEnergyOther += slSwitchMatrix.readDynamicEnergy + (muxBP.readDynamicEnergy+muxDecoderBP.readDynamicEnergy)/numReadPulseBP;
 					
+					leakage += slSwitchMatrix.leakage;
+					leakage += (muxBP.leakage+muxDecoderBP.leakage);
+					leakage += multilevelSenseAmpBP.leakage;
+					leakage += multilevelSAEncoderBP.leakage;
+					leakage += dffBP.leakage;
+					leakage += adderBP.leakage;
+					leakage += shiftAddBP.leakage;
 				}
 				
 				// Write
@@ -1822,7 +1852,7 @@ void SubArray::CalculatePower(const vector<double> &columnResistance, const vect
 				writeDynamicEnergy += writeDynamicEnergyArray;
 				
 				// Leakage
-				leakage = 0;
+				
 				leakage += wlDecoder.leakage;
 				leakage += wlDecoderDriver.leakage;
 				leakage += wlNewDecoderDriver.leakage;
@@ -1903,6 +1933,12 @@ void SubArray::CalculatePower(const vector<double> &columnResistance, const vect
 						readDynamicEnergyADC += multilevelSenseAmpBP.readDynamicEnergy + multilevelSAEncoderBP.readDynamicEnergy + readDynamicEnergyArray;
 						readDynamicEnergyAccum += shiftAddBP.readDynamicEnergy;
 						readDynamicEnergyOther += slSwitchMatrix.readDynamicEnergy + (muxBP.readDynamicEnergy+muxDecoderBP.readDynamicEnergy)/numReadPulseBP;
+						
+						leakage += slSwitchMatrix.leakage;
+						leakage += (muxBP.leakage+muxDecoderBP.leakage);
+						leakage += multilevelSenseAmpBP.leakage;
+						leakage += multilevelSAEncoderBP.leakage;
+						leakage += shiftAddBP.leakage;
 					} else {
 						readDynamicEnergyArray = 0;
 						readDynamicEnergyArray += capBL * cell.readVoltage * cell.readVoltage * numReadCells; // Selected BLs activityColWrite
@@ -1937,6 +1973,14 @@ void SubArray::CalculatePower(const vector<double> &columnResistance, const vect
 						readDynamicEnergyADC += multilevelSenseAmpBP.readDynamicEnergy + multilevelSAEncoderBP.readDynamicEnergy + readDynamicEnergyArray;
 						readDynamicEnergyAccum += dffBP.readDynamicEnergy + adderBP.readDynamicEnergy + shiftAddBP.readDynamicEnergy;
 						readDynamicEnergyOther += slSwitchMatrix.readDynamicEnergy + (muxBP.readDynamicEnergy+muxDecoderBP.readDynamicEnergy)/numReadPulseBP;
+						
+						leakage += slSwitchMatrix.leakage;
+						leakage += (muxBP.leakage+muxDecoderBP.leakage);
+						leakage += multilevelSenseAmpBP.leakage;
+						leakage += multilevelSAEncoderBP.leakage;
+						leakage += dffBP.leakage;
+						leakage += adderBP.leakage;
+						leakage += shiftAddBP.leakage;
 					}
 				}
 				
@@ -1949,7 +1993,6 @@ void SubArray::CalculatePower(const vector<double> &columnResistance, const vect
 				writeDynamicEnergy += writeDynamicEnergyArray;
 				
 				// Leakage
-				leakage = 0;
 				leakage += wlSwitchMatrix.leakage;
 				leakage += wlNewSwitchMatrix.leakage;
 				leakage += slSwitchMatrix.leakage;
