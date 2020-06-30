@@ -649,7 +649,7 @@ void TileCalculatePerformance(const vector<vector<double> > &newMemory, const ve
 		
 		//considering buffer activation: no matter speedup or not, the total number of data transferred is fixed
 		double numBitToLoadOut, numBitToLoadIn;
-		numBitToLoadOut= MAX(weightMatrixRow*numInVector/numPE, 0);
+		numBitToLoadOut= MAX(weightMatrixRow*numInVector/sqrt(numPE), 0);
 		inputBuffer->CalculateLatency(inputBuffer->interface_width, numBitToLoadOut/inputBuffer->interface_width, inputBuffer->interface_width, numBitToLoadOut/inputBuffer->interface_width);
 		inputBuffer->CalculatePower(inputBuffer->interface_width, numBitToLoadOut/inputBuffer->interface_width, inputBuffer->interface_width, numBitToLoadOut/inputBuffer->interface_width);
 		
