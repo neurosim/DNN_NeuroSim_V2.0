@@ -62,7 +62,7 @@ void HTree::Initialize(int _numRow, int _numCol, double _delaytolerance, double 
 	delaytolerance = _delaytolerance;
 	busWidth = _busWidth;
 
-	numStage = 2*floor(log2((double) max(numRow, numCol)))+1;   // vertical has N stage, horizontal has N+1 stage
+	numStage = 2*ceil(log2((double) max(numRow, numCol)))+1;   // vertical has N stage, horizontal has N+1 stage
 	unitLengthWireResistance = param->unitLengthWireResistance;
 	unitLengthWireCap = 0.2e-15/1e-6;;   // 0.2 fF/mm
 	
