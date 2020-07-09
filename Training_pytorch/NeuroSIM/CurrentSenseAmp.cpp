@@ -268,8 +268,14 @@ double CurrentSenseAmp::GetColumnPower(double columnRes) {
 				Column_Power = (0.0037*log(columnRes/1000.0)+7.7017)*1e-6;
 			} else if (param->technode == 32){  
 				Column_Power = (0.0064*log(columnRes/1000.0)+7.9648)*1e-6;
-			} else {   // technode below and equal to 22nm
+			} else if (param->technode == 22){   
 				Column_Power = (0.0087*log(columnRes/1000.0)+2.1939)*1e-6;
+			} else if (param->technode == 14){  
+				Column_Power = (0.0087*log(columnRes/1000.0)+1)*1e-6;
+			} else if (param->technode == 10){  
+				Column_Power = (0.0087*log(columnRes/1000.0)+0.7)*1e-6;
+			} else {   // 7nm
+				Column_Power = (0.0087*log(columnRes/1000.0)+0.5)*1e-6;
 			}
 		} else {                         // LP
 			if (param->technode == 130) {
@@ -282,8 +288,14 @@ double CurrentSenseAmp::GetColumnPower(double columnRes) {
 				Column_Power = (0.0710*log(columnRes/1000.0)+6.4147)*1e-6;
 			} else if (param->technode == 32){  
 				Column_Power = (0.0251*log(columnRes/1000.0)+4.7835)*1e-6;
-			}  else {   // technode below and equal to 22nm
+			} else if (param->technode == 22){   
 				Column_Power = (0.0516*log(columnRes/1000.0)+3.2349)*1e-6;
+			} else if (param->technode == 14){  
+				Column_Power = (0.0516*log(columnRes/1000.0)+2.2)*1e-6;
+			} else if (param->technode == 10){  
+				Column_Power = (0.0516*log(columnRes/1000.0)+1.7)*1e-6;
+			} else {   // 7nm
+				Column_Power = (0.0516*log(columnRes/1000.0)+1.3)*1e-6;
 			}
 		}
 	}
