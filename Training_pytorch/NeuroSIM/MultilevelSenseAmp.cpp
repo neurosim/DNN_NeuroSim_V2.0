@@ -296,27 +296,27 @@ double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 	} else {
 		if (param->deviceroadmap == 1) {  // HP
 			if (param->technode == 130) {
-				Column_Power = (0.00001*log(columnRes/1000.0)+8.8898)*1e-6;
+				Column_Power = (0.00001*log(columnRes/1000.0)+9.8898)*1e-6;
 			} else if (param->technode == 90) {
-				Column_Power = (0.0002*log(columnRes/1000.0)+10.09)*1e-6;
+				Column_Power = (0.0002*log(columnRes/1000.0)+9.09)*1e-6;
 			} else if (param->technode == 65) {
-				Column_Power = (0.0001*log(columnRes/1000.0)+6.9579)*1e-6;
+				Column_Power = (0.0001*log(columnRes/1000.0)+7.9579)*1e-6;
 			} else if (param->technode == 45) {
 				Column_Power = (0.0037*log(columnRes/1000.0)+7.7017)*1e-6;
 			} else if (param->technode == 32){  
 				Column_Power = (0.0064*log(columnRes/1000.0)+7.9648)*1e-6;
 			} else if (param->technode == 22){   
-				Column_Power = (0.0087*log(columnRes/1000.0)+2.1939)*1e-6;
+				Column_Power = (0.0087*log(columnRes/1000.0)+3.1939)*1e-6;
 			} else if (param->technode == 14){  
-				Column_Power = (0.0087*log(columnRes/1000.0)+1)*1e-6;
+				Column_Power = (0.0087*log(columnRes/1000.0)+2.2)*1e-6;
 			} else if (param->technode == 10){  
-				Column_Power = (0.0087*log(columnRes/1000.0)+0.7)*1e-6;
+				Column_Power = (0.0087*log(columnRes/1000.0)+1.7)*1e-6;
 			} else {   // 7nm
-				Column_Power = (0.0087*log(columnRes/1000.0)+0.5)*1e-6;
+				Column_Power = (0.0087*log(columnRes/1000.0)+1.2)*1e-6;
 			}
 		} else {                         // LP
 			if (param->technode == 130) {
-				Column_Power = (0.2811*log(columnRes/1000.0)+6.0809)*1e-6;
+				Column_Power = (0.2811*log(columnRes/1000.0)+7.0809)*1e-6;
 			} else if (param->technode == 90) {
 				Column_Power = (0.0578*log(columnRes/1000.0)+7.6102)*1e-6;
 			} else if (param->technode == 65) {
@@ -326,13 +326,13 @@ double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 			} else if (param->technode == 32){  
 				Column_Power = (0.0251*log(columnRes/1000.0)+4.7835)*1e-6;
 			} else if (param->technode == 22){   
-				Column_Power = (0.0516*log(columnRes/1000.0)+3.2349)*1e-6;
+				Column_Power = (0.0516*log(columnRes/1000.0)+2.2349)*1e-6;
 			} else if (param->technode == 14){  
-				Column_Power = (0.0516*log(columnRes/1000.0)+2.2)*1e-6;
+				Column_Power = (0.0516*log(columnRes/1000.0)+1.5)*1e-6;
 			} else if (param->technode == 10){  
-				Column_Power = (0.0516*log(columnRes/1000.0)+1.7)*1e-6;
+				Column_Power = (0.0516*log(columnRes/1000.0)+1.1)*1e-6;
 			} else {   // 7nm
-				Column_Power = (0.0516*log(columnRes/1000.0)+1.3)*1e-6;
+				Column_Power = (0.0516*log(columnRes/1000.0)+0.7)*1e-6;
 			}
 		}
 	}
