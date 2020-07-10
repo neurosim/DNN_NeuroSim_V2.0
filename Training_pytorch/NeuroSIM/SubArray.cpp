@@ -171,8 +171,8 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			}
 			
 		} else if (conventionalParallel) {
-			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
-			mux.Initialize(ceil(numCol/numColMuxed), numColMuxed, resCellAccess, FPGA);       
+			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess/numRow/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+			mux.Initialize(ceil(numCol/numColMuxed), numColMuxed, resCellAccess/numRow/2, FPGA);       
 			muxDecoder.Initialize(REGULAR_ROW, (int)ceil(log2(numColMuxed)), true, false);
 			multilevelSenseAmp.Initialize(numCol/numColMuxed, levelOutput, clkFreq, numReadCellPerOperationNeuro, true);
 			multilevelSAEncoder.Initialize(levelOutput, numCol/numColMuxed);
@@ -181,9 +181,9 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			}
 			
 			if (trainingEstimation) {
-				wlSwitchMatrixBP.Initialize(ROW_MODE, numCol, resCellAccess, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+				wlSwitchMatrixBP.Initialize(ROW_MODE, numCol, resCellAccess/numRow/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
 				if (parallelBP) {
-					muxBP.Initialize(ceil(numRow/numRowMuxedBP), numRowMuxedBP, resCellAccess, FPGA);       
+					muxBP.Initialize(ceil(numRow/numRowMuxedBP), numRowMuxedBP, resCellAccess/numRow/2, FPGA);       
 					muxDecoderBP.Initialize(REGULAR_ROW, (int)ceil(log2(numRowMuxedBP)), true, false);
 					multilevelSenseAmpBP.Initialize(numRow/numRowMuxedBP, levelOutputBP, clkFreq, numReadCellPerOperationNeuro, true);
 					multilevelSAEncoderBP.Initialize(levelOutputBP, numRow/numRowMuxedBP);
@@ -210,11 +210,11 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			dff.Initialize((adderBit+1)*numAdder, clkFreq);	
 			adder.Initialize(adderBit, numAdder);
 		} else if (BNNparallelMode || XNORparallelMode) {
-			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess/numRow/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
 			multilevelSenseAmp.Initialize(numCol/numColMuxed, levelOutput, clkFreq, numReadCellPerOperationNeuro, true);
 			multilevelSAEncoder.Initialize(levelOutput, numCol/numColMuxed);
 		} else {
-			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess/numRow/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
 			multilevelSenseAmp.Initialize(numCol/numColMuxed, levelOutput, clkFreq, numReadCellPerOperationNeuro, true);
 			multilevelSAEncoder.Initialize(levelOutput, numCol/numColMuxed);
 			if (numReadPulse > 1) {
@@ -510,7 +510,7 @@ void SubArray::CalculateArea() {  //calculate layout area for total design
 						width += muxBP.width + multilevelSenseAmpBP.width + multilevelSAEncoderBP.width + shiftAddBP.width + prechargerBP.width + sramWriteDriverBP.width;
 						areaAG = muxBP.area + muxDecoderBP.area + multilevelSenseAmpBP.area + multilevelSAEncoderBP.area + shiftAddBP.area + wlSwitchMatrixBP.area + prechargerBP.area + sramWriteDriverBP.area;
 						usedArea += areaAG;
-						areaADC += multilevelSenseAmpBP.area + multilevelSAEncoderBP.area + prechargerBP.width;
+						areaADC += multilevelSenseAmpBP.area + multilevelSAEncoderBP.area + prechargerBP.area;
 						areaAccum += shiftAddBP.area;
 						areaOther += muxBP.area + muxDecoderBP.area + wlSwitchMatrixBP.area + sramWriteDriverBP.area;
 					} else {

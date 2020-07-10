@@ -680,9 +680,9 @@ vector<double> GetColumnResistance(const vector<double> &input, const vector<vec
 				}
 				
 			} else if (cell.memCellType == Type::SRAM) {	
-				// SRAM: weight value do not affect sense energy --> read energy calculated in subArray.cpp (based on wireRes wireCap etc)
+				double totalWireResistance = (double) (resCellAccess + param->wireResistanceCol);
 				if ((int) input[i] == 1) {
-					columnG += (double) 1.0/resCellAccess + (double) 1.0/param->wireResistanceCol;
+					columnG += (double) 1.0/totalWireResistance;
 					activatedRow += 1 ;
 				} else {
 					columnG += (double) 1.0/param->wireResistanceCol;
@@ -730,7 +730,7 @@ vector<double> GetRowResistance(const vector<double> &input, const vector<vector
 				totalWireResistance = (double) 1.0/weight[i][j] + (i + 1) * param->wireResistanceRow + (weight[0].size() - j) * param->wireResistanceCol;
 			} else if (cell.memCellType == Type::SRAM) {	
 				// SRAM: weight value do not affect sense energy --> read energy calculated in subArray.cpp (based on wireRes wireCap etc)
-				totalWireResistance = (double) 1.0 / ((double) 1.0/resCellAccess + (double) 1.0/param->wireResistanceCol);
+				totalWireResistance = (double) (resCellAccess + param->wireResistanceCol);
 			}
 		}
 		rowG = (double) 1.0/totalWireResistance * activatedCol;
@@ -789,13 +789,13 @@ double GetWriteUpdateEstimation(SubArray *subArray, Technology& tech, MemCell& c
 						int thisPulse = (int)ceil(abs(newMemory[i][j]-oldMemory[i][j])/minDeltaConductance);
 						numSetWritePulse = MAX( numSetWritePulse, thisPulse );
 						// energy in each cell
-						*writeDynamicEnergyArray += cell.writeVoltage * cell.writeVoltage / (abs(1/newMemory[i][j] + 1/oldMemory[i][j])/2) * cell.writePulseWidth * thisPulse *((cell.memCellType == Type::FeFET)==true? 0:1);
+						*writeDynamicEnergyArray += cell.writeVoltage * cell.writeVoltage / (abs(1/newMemory[i][j] + 1/oldMemory[i][j])/2) * cell.writePulseWidth * thisPulse;
 					} else {   // LTD
 						numReset += 1;
 						int thisPulse = (int)ceil(abs(newMemory[i][j]-oldMemory[i][j])/minDeltaConductance);
 						numResetWritePulse = MAX( numResetWritePulse, thisPulse );
 						// energy in each cell
-						*writeDynamicEnergyArray += cell.writeVoltage * cell.writeVoltage / (abs(1/newMemory[i][j] + 1/oldMemory[i][j])/2) * cell.writePulseWidth * thisPulse *((cell.memCellType == Type::FeFET)==true? 0:1);
+						*writeDynamicEnergyArray += cell.writeVoltage * cell.writeVoltage / (abs(1/newMemory[i][j] + 1/oldMemory[i][j])/2) * cell.writePulseWidth * thisPulse;
 					}
 				} else { // no update
 					numSet += 0;
