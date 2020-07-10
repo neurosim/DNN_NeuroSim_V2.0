@@ -181,9 +181,9 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			}
 			
 			if (trainingEstimation) {
-				wlSwitchMatrixBP.Initialize(ROW_MODE, numCol, resCellAccess/numRow/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+				wlSwitchMatrixBP.Initialize(ROW_MODE, numCol, resCellAccess/numCol/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
 				if (parallelBP) {
-					muxBP.Initialize(ceil(numRow/numRowMuxedBP), numRowMuxedBP, resCellAccess/numRow/2, FPGA);       
+					muxBP.Initialize(ceil(numRow/numRowMuxedBP), numRowMuxedBP, resCellAccess/numCol/2, FPGA);       
 					muxDecoderBP.Initialize(REGULAR_ROW, (int)ceil(log2(numRowMuxedBP)), true, false);
 					multilevelSenseAmpBP.Initialize(numRow/numRowMuxedBP, levelOutputBP, clkFreq, numReadCellPerOperationNeuro, true);
 					multilevelSAEncoderBP.Initialize(levelOutputBP, numRow/numRowMuxedBP);
