@@ -304,7 +304,7 @@ double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 			} else if (param->technode == 45) {
 				Column_Power = (0.0037*log(columnRes/1000.0)+7.7017)*1e-6;
 			} else if (param->technode == 32){  
-				Column_Power = (0.0064*log(columnRes/1000.0)+7.9648)*1e-6;
+				Column_Power = (0.0064*log(columnRes/1000.0)+5.9648)*1e-6;
 			} else if (param->technode == 22){   
 				Column_Power = (0.0087*log(columnRes/1000.0)+3.1939)*1e-6;
 			} else if (param->technode == 14){  
@@ -316,13 +316,13 @@ double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 			}
 		} else {                         // LP
 			if (param->technode == 130) {
-				Column_Power = (0.2811*log(columnRes/1000.0)+7.0809)*1e-6;
+				Column_Power = (0.2811*log(columnRes/1000.0)+8.0809)*1e-6;
 			} else if (param->technode == 90) {
 				Column_Power = (0.0578*log(columnRes/1000.0)+7.6102)*1e-6;
 			} else if (param->technode == 65) {
 				Column_Power = (0.0710*log(columnRes/1000.0)+6.4147)*1e-6;
 			} else if (param->technode == 45) {
-				Column_Power = (0.0710*log(columnRes/1000.0)+6.4147)*1e-6;
+				Column_Power = (0.0710*log(columnRes/1000.0)+5.3162)*1e-6;
 			} else if (param->technode == 32){  
 				Column_Power = (0.0251*log(columnRes/1000.0)+4.7835)*1e-6;
 			} else if (param->technode == 22){   
