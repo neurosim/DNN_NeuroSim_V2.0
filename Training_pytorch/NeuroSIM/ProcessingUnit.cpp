@@ -685,7 +685,7 @@ vector<double> GetColumnResistance(const vector<double> &input, const vector<vec
 					columnG += (double) 1.0/totalWireResistance;
 					activatedRow += 1 ;
 				} else {
-					columnG += (double) 1.0/param->wireResistanceCol;
+					columnG += 0;
 				}
 			}
 		}
