@@ -1473,7 +1473,7 @@ vector<vector<double> > LoadInWeightData(const string &weightfile, int numRowPer
 						for (int u=0; u<numColPerSynapse; u++) {
 							int cellvalue = synapsevector[u];
 							double conductance = cellvalue/(cellrange-1) * (maxConductance-minConductance) + minConductance;
-							weightrow.push_back(cellvalue);
+							weightrow.push_back(conductance);
 						}
 					}
 				}
