@@ -54,7 +54,7 @@ public:
 	bool globalBufferType, tileBufferType, peBufferType, chipActivation, reLu, novelMapping, pipeline, trainingEstimation, parallelBP, nonlinearIV;
 	int globalBufferCoreSizeRow, globalBufferCoreSizeCol, tileBufferCoreSizeRow, tileBufferCoreSizeCol;
 	
-	double clkFreq, featuresize, readNoise, resistanceOn, resistanceOff, maxConductance, minConductance;
+	double clkFreq, featuresize, readNoise, resistanceOn, resistanceOff, maxConductance, minConductance, gateCapFeFET;
 	int temp, technode, wireWidth, multipleCells;
 	double maxNumLevelLTP, maxNumLevelLTD, readVoltage, readPulseWidth, writeVoltage;
 	double accessVoltage, resistanceAccess;

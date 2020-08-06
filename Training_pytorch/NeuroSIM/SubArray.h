@@ -65,7 +65,6 @@
 #include "MultilevelSenseAmp.h"
 #include "MultilevelSAEncoder.h"
 
-
 using namespace std;
 
 class SubArray: public FunctionUnit {
@@ -129,7 +128,7 @@ public:
 	bool XNORsequentialMode;      
 	bool XNORparallelMode;   
 	bool parallelBP, trainingEstimation;	
-
+	
 	int levelOutput, numReadPulseBP, levelOutputBP, numRowMuxedBP;
 	
 	ReadCircuitMode readCircuitMode;
@@ -152,7 +151,6 @@ public:
 	SpikingMode spikingMode;	// NONSPIKING: input data using pulses in binary representation
 								// SPIKING: input data using # of pulses
 	bool shiftAddEnable;    // 0 for partition because the shift-and-add circuit will be after the last A&R stage
-
 	bool relaxArrayCellHeight;	// true: relax the memory cell height to match the height of periperal circuit unit that connects to the row (ex: standard cell height in the last stage of row decoder) if the latter is larger
 	bool relaxArrayCellWidth;	// true: relax the memory cell width to match the width of periperal circuit unit that connects to the column (ex: pass gate width in the column mux) if the latter is larger
 

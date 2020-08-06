@@ -75,7 +75,7 @@ public:
 	bool FPGA;
 	bool parallel;
 	bool neuro;
-	double clkFreq;
+	double clkFreq, widthNmos, widthPmos;
 	int numReadCellPerOperationNeuro;
 	vector<double> Rref;
 

@@ -78,11 +78,10 @@ void MultilevelSenseAmp::Initialize(int _numCol, int _levelOutput, double _clkFr
 			Rref.push_back(R_this);
 		} // TODO: Nonlinear Quantize
 	}
-	
-	
+	widthNmos = MIN_NMOS_SIZE * tech.featureSize;
+	widthPmos = tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize;
 	// Initialize SenseAmp
 	currentSenseAmp.Initialize((levelOutput-1)*numCol, false, false, clkFreq, numReadCellPerOperationNeuro);        // use real-traced mode ... 
-
 	initialized = true;
 	}
 }
@@ -96,16 +95,22 @@ void MultilevelSenseAmp::CalculateArea(double heightArray, double widthArray, Ar
 		height = 0;
 		width = 0;
 		
+		double hNmos, wNmos, hPmos, wPmos;
+		CalculateGateArea(INV, 1, widthNmos, 0, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &hNmos, &wNmos);
+		CalculateGateArea(INV, 1, 0, widthPmos, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &hPmos, &wPmos);
+		
 		if (widthArray && _option==NONE) {
 			currentSenseAmp.CalculateUnitArea();
 			currentSenseAmp.CalculateArea(widthArray);
 			area = currentSenseAmp.area;
+			area += ((hNmos*wNmos)*9 + (hPmos*wPmos)*9)*(levelOutput-1)*numCol;
 			width = widthArray;
 			height = area / width;
 		} else if (heightArray && _option==NONE) {
 			currentSenseAmp.CalculateUnitArea();
 			currentSenseAmp.CalculateArea(heightArray);
 			area = currentSenseAmp.area;
+			area += ((hNmos*wNmos)*9 + (hPmos*wPmos)*9)*(levelOutput-1)*numCol;
 			height = heightArray;
 			width = area / height;
 		} else {
@@ -296,43 +301,43 @@ double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 	} else {
 		if (param->deviceroadmap == 1) {  // HP
 			if (param->technode == 130) {
-				Column_Power = (0.00001*log(columnRes/1000.0)+9.8898)*1e-6;
+				Column_Power = 19.898*1e-6;
 			} else if (param->technode == 90) {
-				Column_Power = (0.0002*log(columnRes/1000.0)+9.09)*1e-6;
+				Column_Power = 13.09*1e-6;
 			} else if (param->technode == 65) {
-				Column_Power = (0.0001*log(columnRes/1000.0)+7.9579)*1e-6;
+				Column_Power = 9.9579*1e-6;
 			} else if (param->technode == 45) {
-				Column_Power = (0.0037*log(columnRes/1000.0)+7.7017)*1e-6;
+				Column_Power = 7.7017*1e-6;
 			} else if (param->technode == 32){  
-				Column_Power = (0.0064*log(columnRes/1000.0)+5.9648)*1e-6;
+				Column_Power = 3.9648*1e-6;
 			} else if (param->technode == 22){   
-				Column_Power = (0.0087*log(columnRes/1000.0)+3.1939)*1e-6;
+				Column_Power = 1.8939*1e-6;
 			} else if (param->technode == 14){  
-				Column_Power = (0.0087*log(columnRes/1000.0)+2.2)*1e-6;
+				Column_Power = 1.2*1e-6;
 			} else if (param->technode == 10){  
-				Column_Power = (0.0087*log(columnRes/1000.0)+1.7)*1e-6;
+				Column_Power = 0.8*1e-6;
 			} else {   // 7nm
-				Column_Power = (0.0087*log(columnRes/1000.0)+1.2)*1e-6;
+				Column_Power = 0.5*1e-6;
 			}
 		} else {                         // LP
 			if (param->technode == 130) {
-				Column_Power = (0.2811*log(columnRes/1000.0)+8.0809)*1e-6;
+				Column_Power = 18.09*1e-6;
 			} else if (param->technode == 90) {
-				Column_Power = (0.0578*log(columnRes/1000.0)+7.6102)*1e-6;
+				Column_Power = 12.612*1e-6;
 			} else if (param->technode == 65) {
-				Column_Power = (0.0710*log(columnRes/1000.0)+6.4147)*1e-6;
+				Column_Power = 8.4147*1e-6;
 			} else if (param->technode == 45) {
-				Column_Power = (0.0710*log(columnRes/1000.0)+5.3162)*1e-6;
+				Column_Power = 6.3162*1e-6;
 			} else if (param->technode == 32){  
-				Column_Power = (0.0251*log(columnRes/1000.0)+4.7835)*1e-6;
+				Column_Power = 3.0875*1e-6;
 			} else if (param->technode == 22){   
-				Column_Power = (0.0516*log(columnRes/1000.0)+2.2349)*1e-6;
-			} else if (param->technode == 14){  
-				Column_Power = (0.0516*log(columnRes/1000.0)+1.5)*1e-6;
-			} else if (param->technode == 10){  
-				Column_Power = (0.0516*log(columnRes/1000.0)+1.1)*1e-6;
+				Column_Power = 1.7*1e-6;
+			} else if (param->technode == 14){   
+				Column_Power = 1.0*1e-6;
+			} else if (param->technode == 10){   
+				Column_Power = 0.55*1e-6;
 			} else {   // 7nm
-				Column_Power = (0.0516*log(columnRes/1000.0)+0.7)*1e-6;
+				Column_Power = 0.35*1e-6;
 			}
 		}
 	}
@@ -434,5 +439,46 @@ double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 			}
 		}
 	}
+	if (param->deviceroadmap == 1) {  // HP			
+		if (param->technode == 130) {
+			Column_Energy += 0.207452*exp(-2.367*log10(columnRes))*1e-9;
+		} else if (param->technode == 90) {
+			Column_Energy += 0.164900*exp(-2.345*log10(columnRes))*1e-9;
+		} else if (param->technode == 65) {
+			Column_Energy += 0.128483*exp(-2.321*log10(columnRes))*1e-9;
+		} else if (param->technode == 45) {
+			Column_Energy += 0.097754*exp(-2.296*log10(columnRes))*1e-9;
+		} else if (param->technode == 32){  
+			Column_Energy += 0.083709*exp(-2.313*log10(columnRes))*1e-9;
+		} else if (param->technode == 22){   
+			Column_Energy += 0.084273*exp(-2.311*log10(columnRes))*1e-9;
+		} else if (param->technode == 14){  
+			Column_Energy += 0.060584*exp(-2.311*log10(columnRes))*1e-9;
+		} else if (param->technode == 10){  
+			Column_Energy += 0.049418*exp(-2.311*log10(columnRes))*1e-9;
+		} else {   // 7nm
+			Column_Energy += 0.040310*exp(-2.311*log10(columnRes))*1e-9;
+		}
+	} else {                         // LP
+		if (param->technode == 130) {
+			Column_Energy += 0.169380*exp(-2.303*log10(columnRes))*1e-9;
+		} else if (param->technode == 90) {
+			Column_Energy += 0.144323*exp(-2.303*log10(columnRes))*1e-9;
+		} else if (param->technode == 65) {
+			Column_Energy += 0.121272*exp(-2.303*log10(columnRes))*1e-9;
+		} else if (param->technode == 45) {
+			Column_Energy += 0.100225*exp(-2.303*log10(columnRes))*1e-9;
+		} else if (param->technode == 32){  
+			Column_Energy += 0.079449*exp(-2.297*log10(columnRes))*1e-9;
+		} else if (param->technode == 22){   
+			Column_Energy += 0.072341*exp(-2.303*log10(columnRes))*1e-9;
+		} else if (param->technode == 14){   
+			Column_Energy += 0.061085*exp(-2.303*log10(columnRes))*1e-9;
+		} else if (param->technode == 10){   
+			Column_Energy += 0.051580*exp(-2.303*log10(columnRes))*1e-9;
+		} else {   // 7nm
+			Column_Energy += 0.043555*exp(-2.303*log10(columnRes))*1e-9;
+		}
+	}	
 	return Column_Energy;
 }

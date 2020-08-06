@@ -57,7 +57,7 @@ Param::Param() {
 	operationmode = 2;     		// 1: conventionalSequential (Use several multi-bit RRAM as one synapse)
 								// 2: conventionalParallel (Use several multi-bit RRAM as one synapse)
 	
-	memcelltype = 3;        	// 1: cell.memCellType = Type::SRAM
+	memcelltype = 2;        	// 1: cell.memCellType = Type::SRAM
 								// 2: cell.memCellType = Type::RRAM
 								// 3: cell.memCellType = Type::FeFET
 	
@@ -124,7 +124,7 @@ Param::Param() {
 	
 	numColMuxed = 8;                    // How many columns share 1 ADC (for eNVM and FeFET) or parallel SRAM
 	levelOutput = 64;                   // # of levels of the multilevelSenseAmp output, should be in 2^N forms; e.g. 32 levels --> 5-bit ADC
-	cellBit = 5;                        // precision of memory device 
+	cellBit = 7;                        // precision of memory device 
 	
 	/*** parameters for SRAM ***/
 	heightInFeatureSizeSRAM = 8;        // SRAM Cell height in feature size
@@ -140,14 +140,15 @@ Param::Param() {
 	heightInFeatureSizeCrossbar = 2;    // Crossbar Cell height in feature size
 	widthInFeatureSizeCrossbar = 2;     // Crossbar Cell width in feature size
 	
-	resistanceOn = 500e3;               // Ron resistance at Vr in the reported measurement data (need to recalculate below if considering the nonlinearity)
-	resistanceOff = 500e3*100;           // Roff resistance at Vr in the reported measurement dat (need to recalculate below if considering the nonlinearity)
+	resistanceOn = 100e3;               // Ron resistance at Vr in the reported measurement data (need to recalculate below if considering the nonlinearity)
+	resistanceOff = 100e3*10;           // Roff resistance at Vr in the reported measurement dat (need to recalculate below if considering the nonlinearity)
 	maxConductance = (double) 1/resistanceOn;
 	minConductance = (double) 1/resistanceOff;
-	maxNumLevelLTP = 32;	            // Maximum number of conductance states during LTP or weight increase
-	maxNumLevelLTD = 32;	            // Maximum number of conductance states during LTD or weight decrease
-	writeVoltage = 3.3;
-	writePulseWidth = 75e-9;
+	maxNumLevelLTP = 128;	            // Maximum number of conductance states during LTP or weight increase
+	maxNumLevelLTD = 128;	            // Maximum number of conductance states during LTD or weight decrease
+	gateCapFeFET = 2.1717e-18;	        // Gate capacitance of FeFET (F)
+	writeVoltage = 4;
+	writePulseWidth = 50e-9;
 	nonlinearIV = false; 				// This option is to consider I-V nonlinearity in cross-point array or not
 	nonlinearity = 10; 					// This is the nonlinearity for the current ratio at Vw and Vw/2
 	

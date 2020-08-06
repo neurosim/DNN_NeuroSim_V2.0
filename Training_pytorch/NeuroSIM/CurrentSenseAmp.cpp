@@ -81,13 +81,12 @@ void CurrentSenseAmp::CalculateUnitArea() {
 	if (!initialized) {
 		cout << "[CurrentSenseAmp] Error: Require initialization first!" << endl;
 	} else {
-		double hNmosL, wNmosL, hNmosS, wNmosS, hNmosM, wNmosM;
+		double hNmos, wNmos, hPmos, wPmos;
 		
 		CalculateGateArea(INV, 1, widthNmos, 0, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &hNmosS, &wNmosS);
-		CalculateGateArea(INV, 1, widthNmos*2, 0, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &hNmosM, &wNmosM);
-		CalculateGateArea(INV, 1, widthNmos*6, 0, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &hNmosL, &wNmosL);
+		CalculateGateArea(INV, 1, 0, widthPmos, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &hPmos, &wPmos);
 		
-		areaUnit = (hNmosL * wNmosL) * 4 + (hNmosS * wNmosS) * 8 + (hNmosM * wNmosM) * 4;
+		areaUnit = (hNmos*wNmos)*48 + (hPmos*wPmos)*24;
 	}
 }
 
@@ -259,49 +258,65 @@ double CurrentSenseAmp::GetColumnPower(double columnRes) {
 	} else {
 		if (param->deviceroadmap == 1) {  // HP
 			if (param->technode == 130) {
-				Column_Power = (0.00001*log(columnRes/1000.0)+8.8898)*1e-6;
+				Column_Power = 19.898*1e-6;
+				Column_Power += 0.207452*exp(-2.367*log10(columnRes));
 			} else if (param->technode == 90) {
-				Column_Power = (0.0002*log(columnRes/1000.0)+10.09)*1e-6;
+				Column_Power = 13.09*1e-6;
+				Column_Power += 0.164900*exp(-2.345*log10(columnRes));
 			} else if (param->technode == 65) {
-				Column_Power = (0.0001*log(columnRes/1000.0)+6.9579)*1e-6;
+				Column_Power = 9.9579*1e-6;
+				Column_Power += 0.128483*exp(-2.321*log10(columnRes));
 			} else if (param->technode == 45) {
-				Column_Power = (0.0037*log(columnRes/1000.0)+7.7017)*1e-6;
+				Column_Power = 7.7017*1e-6;
+				Column_Power += 0.097754*exp(-2.296*log10(columnRes));
 			} else if (param->technode == 32){  
-				Column_Power = (0.0064*log(columnRes/1000.0)+7.9648)*1e-6;
+				Column_Power = 3.9648*1e-6;
+				Column_Power += 0.083709*exp(-2.313*log10(columnRes));
 			} else if (param->technode == 22){   
-				Column_Power = (0.0087*log(columnRes/1000.0)+2.1939)*1e-6;
+				Column_Power = 1.8939*1e-6;
+				Column_Power += 0.084273*exp(-2.311*log10(columnRes));
 			} else if (param->technode == 14){  
-				Column_Power = (0.0087*log(columnRes/1000.0)+1)*1e-6;
+				Column_Power = 1.2*1e-6;
+				Column_Power += 0.060584*exp(-2.311*log10(columnRes));
 			} else if (param->technode == 10){  
-				Column_Power = (0.0087*log(columnRes/1000.0)+0.7)*1e-6;
+				Column_Power = 0.8*1e-6;
+				Column_Power += 0.049418*exp(-2.311*log10(columnRes));
 			} else {   // 7nm
-				Column_Power = (0.0087*log(columnRes/1000.0)+0.5)*1e-6;
+				Column_Power = 0.5*1e-6;
+				Column_Power += 0.040310*exp(-2.311*log10(columnRes));
 			}
 		} else {                         // LP
 			if (param->technode == 130) {
-				Column_Power = (0.2811*log(columnRes/1000.0)+6.0809)*1e-6;
+				Column_Power = 18.09*1e-6;
+				Column_Power += 0.169380*exp(-2.303*log10(columnRes));
 			} else if (param->technode == 90) {
-				Column_Power = (0.0578*log(columnRes/1000.0)+7.6102)*1e-6;
+				Column_Power = 12.612*1e-6;
+				Column_Power += 0.144323*exp(-2.303*log10(columnRes));
 			} else if (param->technode == 65) {
-				Column_Power = (0.0710*log(columnRes/1000.0)+6.4147)*1e-6;
+				Column_Power = 8.4147*1e-6;
+				Column_Power += 0.121272*exp(-2.303*log10(columnRes));
 			} else if (param->technode == 45) {
-				Column_Power = (0.0710*log(columnRes/1000.0)+6.4147)*1e-6;
+				Column_Power = 6.3162*1e-6;
+				Column_Power += 0.100225*exp(-2.303*log10(columnRes));
 			} else if (param->technode == 32){  
-				Column_Power = (0.0251*log(columnRes/1000.0)+4.7835)*1e-6;
+				Column_Power = 3.0875*1e-6;
+				Column_Power += 0.079449*exp(-2.297*log10(columnRes));
 			} else if (param->technode == 22){   
-				Column_Power = (0.0516*log(columnRes/1000.0)+3.2349)*1e-6;
-			} else if (param->technode == 14){  
-				Column_Power = (0.0516*log(columnRes/1000.0)+2.2)*1e-6;
-			} else if (param->technode == 10){  
-				Column_Power = (0.0516*log(columnRes/1000.0)+1.7)*1e-6;
+				Column_Power = 1.7*1e-6;
+				Column_Power += 0.072341*exp(-2.303*log10(columnRes));
+			} else if (param->technode == 14){   
+				Column_Power = 1.0*1e-6;
+				Column_Power += 0.061085*exp(-2.303*log10(columnRes));
+			} else if (param->technode == 10){   
+				Column_Power = 0.55*1e-6;
+				Column_Power += 0.051580*exp(-2.303*log10(columnRes));
 			} else {   // 7nm
-				Column_Power = (0.0516*log(columnRes/1000.0)+1.3)*1e-6;
+				Column_Power = 0.35*1e-6;
+				Column_Power += 0.043555*exp(-2.303*log10(columnRes));
 			}
 		}
 	}
-	
 	return Column_Power;
-	
 }
 
 
