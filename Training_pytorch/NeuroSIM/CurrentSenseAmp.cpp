@@ -86,7 +86,7 @@ void CurrentSenseAmp::CalculateUnitArea() {
 		CalculateGateArea(INV, 1, widthNmos, 0, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &hNmosS, &wNmosS);
 		CalculateGateArea(INV, 1, 0, widthPmos, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &hPmos, &wPmos);
 		
-		areaUnit = (hNmos*wNmos)*48 + (hPmos*wPmos)*24;
+		areaUnit = (hNmos*wNmos)*48 + (hPmos*wPmos)*40;
 	}
 }
 
