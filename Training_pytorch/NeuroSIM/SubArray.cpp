@@ -171,7 +171,7 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			}
 			
 		} else if (conventionalParallel) {
-			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess/numRow/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resRow, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
 			if (numColMuxed>1) {
 				mux.Initialize(ceil(numCol/numColMuxed), numColMuxed, resCellAccess/numRow/2, FPGA);       
 				muxDecoder.Initialize(REGULAR_ROW, (int)ceil(log2(numColMuxed)), true, false);
@@ -185,7 +185,7 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			}
 			
 			if (trainingEstimation) {
-				wlSwitchMatrixBP.Initialize(ROW_MODE, numCol, resCellAccess/numCol/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+				wlSwitchMatrixBP.Initialize(ROW_MODE, numCol, resCol, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
 				if (parallelBP) {
 					if (numRowMuxedBP>1) {
 						muxBP.Initialize(ceil(numRow/numRowMuxedBP), numRowMuxedBP, resCellAccess/numCol/2, FPGA);       
@@ -218,11 +218,11 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			dff.Initialize((adderBit+1)*numAdder, clkFreq);	
 			adder.Initialize(adderBit, numAdder);
 		} else if (BNNparallelMode || XNORparallelMode) {
-			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess/numCol/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resRow, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
 			multilevelSenseAmp.Initialize(numCol/numColMuxed, levelOutput, clkFreq, numReadCellPerOperationNeuro, true);
 			multilevelSAEncoder.Initialize(levelOutput, numCol/numColMuxed);		
 		} else {
-			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resCellAccess/numCol/2, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+			wlSwitchMatrix.Initialize(ROW_MODE, numRow, resRow, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
 			multilevelSenseAmp.Initialize(numCol/numColMuxed, levelOutput, clkFreq, numReadCellPerOperationNeuro, true);
 			multilevelSAEncoder.Initialize(levelOutput, numCol/numColMuxed);
 			if (numReadPulse > 1) {
