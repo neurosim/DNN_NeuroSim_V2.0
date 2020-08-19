@@ -252,6 +252,7 @@ def GetParamB(A, maxLevel):
 def Retention(x, t, v, detect, target):
     lower = torch.min(x).item()
     upper = torch.max(x).item()
+    target = (torch.max(x).item() - torch.min(x).item())*target
     if detect == 1: # need to define the sign of v 
         sign = torch.zeros_like(x)
         truncateX = (x+1)/2
