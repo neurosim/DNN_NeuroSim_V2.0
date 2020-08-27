@@ -52,37 +52,35 @@ MultilevelSenseAmp::MultilevelSenseAmp(const InputParameter& _inputParameter, co
 	initialized = false;
 }
 
-void MultilevelSenseAmp::Initialize(int _numCol, int _levelOutput, double _clkFreq, int _numReadCellPerOperationNeuro, bool _parallel) {
+void MultilevelSenseAmp::Initialize(int _numCol, int _levelOutput, double _clkFreq, int _numReadCellPerOperationNeuro, bool _parallel, bool _currentMode) {
 	if (initialized) {
 		cout << "[MultilevelSenseAmp] Warning: Already initialized!" << endl;
     } else {
-
-	numCol = _numCol;
-	levelOutput = _levelOutput;                // # of bits for A/D output ... 
-	clkFreq = _clkFreq;
-	numReadCellPerOperationNeuro = _numReadCellPerOperationNeuro;
-	parallel = _parallel;
-	
-	if (parallel) {
-		for (int i=0; i<levelOutput-1; i++){
-			double R_start = (double) param->resistanceOn / param->numRowSubArray;
-			double R_index = (double) param->resistanceOff / param->numRowSubArray;
-			double R_this = R_start + (double) (i+1)*R_index/levelOutput;
-			Rref.push_back(R_this);
-		} // TODO: Nonlinear Quantize
-	} else {
-		for (int i=0; i<levelOutput-1; i++){
-			double R_start = (double) param->resistanceOn;
-			double R_index = (double) param->resistanceOff;
-			double R_this = R_start + (double) (i+1)*R_index/levelOutput;
-			Rref.push_back(R_this);
-		} // TODO: Nonlinear Quantize
-	}
-	widthNmos = MIN_NMOS_SIZE * tech.featureSize;
-	widthPmos = tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize;
-	// Initialize SenseAmp
-	currentSenseAmp.Initialize((levelOutput-1)*numCol, false, false, clkFreq, numReadCellPerOperationNeuro);        // use real-traced mode ... 
-	initialized = true;
+		numCol = _numCol;
+		levelOutput = _levelOutput;                // # of bits for A/D output ... 
+		clkFreq = _clkFreq;
+		numReadCellPerOperationNeuro = _numReadCellPerOperationNeuro;
+		parallel = _parallel;
+		currentMode = _currentMode;
+		
+		if (parallel) {
+			for (int i=0; i<levelOutput-1; i++){
+				double R_start = (double) param->resistanceOn / param->numRowSubArray;
+				double R_index = (double) param->resistanceOff / param->numRowSubArray;
+				double R_this = R_start + (double) (i+1)*R_index/levelOutput;
+				Rref.push_back(R_this);
+			} // TODO: Nonlinear Quantize
+		} else {
+			for (int i=0; i<levelOutput-1; i++){
+				double R_start = (double) param->resistanceOn;
+				double R_index = (double) param->resistanceOff;
+				double R_this = R_start + (double) (i+1)*R_index/levelOutput;
+				Rref.push_back(R_this);
+			} // TODO: Nonlinear Quantize
+		}
+		widthNmos = MIN_NMOS_SIZE * tech.featureSize;
+		widthPmos = tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize;
+		initialized = true;
 	}
 }
 
@@ -100,17 +98,19 @@ void MultilevelSenseAmp::CalculateArea(double heightArray, double widthArray, Ar
 		CalculateGateArea(INV, 1, 0, widthPmos, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &hPmos, &wPmos);
 		
 		if (widthArray && _option==NONE) {
-			currentSenseAmp.CalculateUnitArea();
-			currentSenseAmp.CalculateArea(widthArray);
-			area = currentSenseAmp.area;
-			area += ((hNmos*wNmos)*9 + (hPmos*wPmos)*9)*(levelOutput-1)*numCol;
+			if (currentMode) {
+				area = ((hNmos*wNmos)*48 + (hPmos*wPmos)*24)*(levelOutput-1)*numCol;
+			} else {
+				area = ((hNmos*wNmos)*52 + (hPmos*wPmos)*60)*(levelOutput-1)*numCol;
+			}
 			width = widthArray;
 			height = area / width;
 		} else if (heightArray && _option==NONE) {
-			currentSenseAmp.CalculateUnitArea();
-			currentSenseAmp.CalculateArea(heightArray);
-			area = currentSenseAmp.area;
-			area += ((hNmos*wNmos)*9 + (hPmos*wPmos)*9)*(levelOutput-1)*numCol;
+			if (currentMode) {
+				area = ((hNmos*wNmos)*48 + (hPmos*wPmos)*24)*(levelOutput-1)*numCol;
+			} else {
+				area = ((hNmos*wNmos)*52 + (hPmos*wPmos)*60)*(levelOutput-1)*numCol;
+			}
 			height = heightArray;
 			width = area / height;
 		} else {
@@ -156,8 +156,14 @@ void MultilevelSenseAmp::CalculateLatency(const vector<double> &columnResistance
 				LatencyCol = 10e-9;
 			}
 		}
-		readLatency += LatencyCol*numColMuxed;
-		readLatency *= numRead;
+		if (currentMode) {
+			readLatency = LatencyCol*numColMuxed;
+			readLatency *= numRead;
+		} else {
+			readLatency = (1e-9)*numColMuxed;
+			readLatency *= numRead;
+		}
+		
 	}
 }
 
@@ -187,7 +193,11 @@ void MultilevelSenseAmp::CalculatePower(const vector<double> &columnResistance, 
 		for (double i=0; i<columnResistance.size(); i++) {
 			double P_Col = 0;
 			P_Col = GetColumnPower(columnResistance[i]);
-			readDynamicEnergy += MAX(P_Col*LatencyCol, 0);
+			if (currentMode) {
+				readDynamicEnergy += MAX(P_Col*LatencyCol, 0);
+			} else {
+				readDynamicEnergy += MAX(P_Col*1e-9, 0);
+			}
 		}
 		readDynamicEnergy *= numRead;
 	}
@@ -310,68 +320,137 @@ double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 	// in Cadence simulation, we fix Vread to 0.5V, with user-defined Vread (different from 0.5V)
 	// we should modify the equivalent columnRes
 	columnRes *= 0.5/param->readVoltage;
-	if ((double) 1/columnRes == 0) { 
-		Column_Power = 1e-6;
-	} else if (columnRes == 0) {
-		Column_Power = 0;
-	} else {
-		if (param->deviceroadmap == 1) {  // HP
-			if (param->technode == 130) {
-				Column_Power = 19.898*(levelOutput-1)*1e-6;
-				Column_Power += 0.17452*exp(-2.367*log10(columnRes));
-			} else if (param->technode == 90) {
-				Column_Power = 13.09*(levelOutput-1)*1e-6;
-				Column_Power += 0.14900*exp(-2.345*log10(columnRes));
-			} else if (param->technode == 65) {
-				Column_Power = 9.9579*(levelOutput-1)*1e-6;
-				Column_Power += 0.1083*exp(-2.321*log10(columnRes));
-			} else if (param->technode == 45) {
-				Column_Power = 7.7017*(levelOutput-1)*1e-6;
-				Column_Power += 0.0754*exp(-2.296*log10(columnRes));
-			} else if (param->technode == 32){  
-				Column_Power = 3.9648*(levelOutput-1)*1e-6;
-				Column_Power += 0.079*exp(-2.313*log10(columnRes));
-			} else if (param->technode == 22){   
-				Column_Power = 1.8939*(levelOutput-1)*1e-6;
-				Column_Power += 0.073*exp(-2.311*log10(columnRes));
-			} else if (param->technode == 14){  
-				Column_Power = 1.2*(levelOutput-1)*1e-6;
-				Column_Power += 0.0584*exp(-2.311*log10(columnRes));
-			} else if (param->technode == 10){  
-				Column_Power = 0.8*(levelOutput-1)*1e-6;
-				Column_Power += 0.0318*exp(-2.311*log10(columnRes));
-			} else {   // 7nm
-				Column_Power = 0.5*(levelOutput-1)*1e-6;
-				Column_Power += 0.0210*exp(-2.311*log10(columnRes));
+	if (currentMode) {
+		if ((double) 1/columnRes == 0) { 
+			Column_Power = 1e-6;
+		} else if (columnRes == 0) {
+			Column_Power = 0;
+		} else {
+			if (param->deviceroadmap == 1) {  // HP
+				if (param->technode == 130) {
+					Column_Power = 19.898*(levelOutput-1)*1e-6;
+					Column_Power += 0.17452*exp(-2.367*log10(columnRes));
+				} else if (param->technode == 90) {
+					Column_Power = 13.09*(levelOutput-1)*1e-6;
+					Column_Power += 0.14900*exp(-2.345*log10(columnRes));
+				} else if (param->technode == 65) {
+					Column_Power = 9.9579*(levelOutput-1)*1e-6;
+					Column_Power += 0.1083*exp(-2.321*log10(columnRes));
+				} else if (param->technode == 45) {
+					Column_Power = 7.7017*(levelOutput-1)*1e-6;
+					Column_Power += 0.0754*exp(-2.296*log10(columnRes));
+				} else if (param->technode == 32){  
+					Column_Power = 3.9648*(levelOutput-1)*1e-6;
+					Column_Power += 0.079*exp(-2.313*log10(columnRes));
+				} else if (param->technode == 22){   
+					Column_Power = 1.8939*(levelOutput-1)*1e-6;
+					Column_Power += 0.073*exp(-2.311*log10(columnRes));
+				} else if (param->technode == 14){  
+					Column_Power = 1.2*(levelOutput-1)*1e-6;
+					Column_Power += 0.0584*exp(-2.311*log10(columnRes));
+				} else if (param->technode == 10){  
+					Column_Power = 0.8*(levelOutput-1)*1e-6;
+					Column_Power += 0.0318*exp(-2.311*log10(columnRes));
+				} else {   // 7nm
+					Column_Power = 0.5*(levelOutput-1)*1e-6;
+					Column_Power += 0.0210*exp(-2.311*log10(columnRes));
+				}
+			} else {                         // LP
+				if (param->technode == 130) {
+					Column_Power = 18.09*(levelOutput-1)*1e-6;
+					Column_Power += 0.1380*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 90) {
+					Column_Power = 12.612*(levelOutput-1)*1e-6;
+					Column_Power += 0.1023*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 65) {
+					Column_Power = 8.4147*(levelOutput-1)*1e-6;
+					Column_Power += 0.0972*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 45) {
+					Column_Power = 6.3162*(levelOutput-1)*1e-6;
+					Column_Power += 0.075*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 32){  
+					Column_Power = 3.0875*(levelOutput-1)*1e-6;
+					Column_Power += 0.0649*exp(-2.297*log10(columnRes));
+				} else if (param->technode == 22){   
+					Column_Power = 1.7*(levelOutput-1)*1e-6;
+					Column_Power += 0.0631*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 14){   
+					Column_Power = 1.0*(levelOutput-1)*1e-6;
+					Column_Power += 0.0508*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 10){   
+					Column_Power = 0.55*(levelOutput-1)*1e-6;
+					Column_Power += 0.0315*exp(-2.303*log10(columnRes));
+				} else {   // 7nm
+					Column_Power = 0.35*(levelOutput-1)*1e-6;
+					Column_Power += 0.0235*exp(-2.303*log10(columnRes));
+				}
 			}
-		} else {                         // LP
-			if (param->technode == 130) {
-				Column_Power = 18.09*(levelOutput-1)*1e-6;
-				Column_Power += 0.1380*exp(-2.303*log10(columnRes));
-			} else if (param->technode == 90) {
-				Column_Power = 12.612*(levelOutput-1)*1e-6;
-				Column_Power += 0.1023*exp(-2.303*log10(columnRes));
-			} else if (param->technode == 65) {
-				Column_Power = 8.4147*(levelOutput-1)*1e-6;
-				Column_Power += 0.0972*exp(-2.303*log10(columnRes));
-			} else if (param->technode == 45) {
-				Column_Power = 6.3162*(levelOutput-1)*1e-6;
-				Column_Power += 0.075*exp(-2.303*log10(columnRes));
-			} else if (param->technode == 32){  
-				Column_Power = 3.0875*(levelOutput-1)*1e-6;
-				Column_Power += 0.0649*exp(-2.297*log10(columnRes));
-			} else if (param->technode == 22){   
-				Column_Power = 1.7*(levelOutput-1)*1e-6;
-				Column_Power += 0.0631*exp(-2.303*log10(columnRes));
-			} else if (param->technode == 14){   
-				Column_Power = 1.0*(levelOutput-1)*1e-6;
-				Column_Power += 0.0508*exp(-2.303*log10(columnRes));
-			} else if (param->technode == 10){   
-				Column_Power = 0.55*(levelOutput-1)*1e-6;
-				Column_Power += 0.0315*exp(-2.303*log10(columnRes));
-			} else {   // 7nm
-				Column_Power = 0.35*(levelOutput-1)*1e-6;
-				Column_Power += 0.0235*exp(-2.303*log10(columnRes));
+		}
+		
+	} else {
+		if ((double) 1/columnRes == 0) { 
+			Column_Power = 1e-6;
+		} else if (columnRes == 0) {
+			Column_Power = 0;
+		} else {
+			if (param->deviceroadmap == 1) {  // HP
+				if (param->technode == 130) {
+					Column_Power = 27.84*(levelOutput-1)*1e-6;
+					Column_Power += 0.207452*exp(-2.367*log10(columnRes));
+				} else if (param->technode == 90) {
+					Column_Power = 22.2*(levelOutput-1)*1e-6;
+					Column_Power += 0.164900*exp(-2.345*log10(columnRes));
+				} else if (param->technode == 65) {
+					Column_Power = 13.058*(levelOutput-1)*1e-6;
+					Column_Power += 0.128483*exp(-2.321*log10(columnRes));
+				} else if (param->technode == 45) {
+					Column_Power = 8.162*(levelOutput-1)*1e-6;
+					Column_Power += 0.097754*exp(-2.296*log10(columnRes));
+				} else if (param->technode == 32){  
+					Column_Power = 4.76*(levelOutput-1)*1e-6;
+					Column_Power += 0.083709*exp(-2.313*log10(columnRes));
+				} else if (param->technode == 22){   
+					Column_Power = 2.373*(levelOutput-1)*1e-6;
+					Column_Power += 0.084273*exp(-2.311*log10(columnRes));
+				} else if (param->technode == 14){  
+					Column_Power = 1.467*(levelOutput-1)*1e-6;
+					Column_Power += 0.060584*exp(-2.311*log10(columnRes));
+				} else if (param->technode == 10){  
+					Column_Power = 0.9077*(levelOutput-1)*1e-6;
+					Column_Power += 0.049418*exp(-2.311*log10(columnRes));
+				} else {   // 7nm
+					Column_Power = 0.5614*(levelOutput-1)*1e-6;
+					Column_Power += 0.040310*exp(-2.311*log10(columnRes));
+				}
+			} else {                         // LP
+				if (param->technode == 130) {
+					Column_Power = 23.4*(levelOutput-1)*1e-6;
+					Column_Power += 0.169380*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 90) {
+					Column_Power = 14.42*(levelOutput-1)*1e-6;
+					Column_Power += 0.144323*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 65) {
+					Column_Power = 10.18*(levelOutput-1)*1e-6;
+					Column_Power += 0.121272*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 45) {
+					Column_Power = 7.062*(levelOutput-1)*1e-6;
+					Column_Power += 0.100225*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 32){  
+					Column_Power = 3.692*(levelOutput-1)*1e-6;
+					Column_Power += 0.079449*exp(-2.297*log10(columnRes));
+				} else if (param->technode == 22){   
+					Column_Power = 1.866*(levelOutput-1)*1e-6;
+					Column_Power += 0.072341*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 14){   
+					Column_Power = 1.126*(levelOutput-1)*1e-6;
+					Column_Power += 0.061085*exp(-2.303*log10(columnRes));
+				} else if (param->technode == 10){   
+					Column_Power = 0.6917*(levelOutput-1)*1e-6;
+					Column_Power += 0.051580*exp(-2.303*log10(columnRes));
+				} else {   // 7nm
+					Column_Power = 0.4211*(levelOutput-1)*1e-6;
+					Column_Power += 0.043555*exp(-2.303*log10(columnRes));
+				}
 			}
 		}
 	}
