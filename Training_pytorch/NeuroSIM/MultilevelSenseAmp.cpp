@@ -202,7 +202,9 @@ double MultilevelSenseAmp::GetColumnLatency(double columnRes) {
 	double Column_Latency = 0;
 	double up_bound = 3, mid_bound = 1.1, low_bound = 0.9;
 	double T_max = 0;
-	
+	// in Cadence simulation, we fix Vread to 0.5V, with user-defined Vread (different from 0.5V)
+	// we should modify the equivalent columnRes
+	columnRes *= 0.5/param->readVoltage;
 	if (((double) 1/columnRes == 0) || (columnRes == 0)) {
 		Column_Latency = 0;
 	} else {
@@ -305,7 +307,9 @@ double MultilevelSenseAmp::GetColumnLatency(double columnRes) {
 
 double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 	double Column_Power = 0;
-	
+	// in Cadence simulation, we fix Vread to 0.5V, with user-defined Vread (different from 0.5V)
+	// we should modify the equivalent columnRes
+	columnRes *= 0.5/param->readVoltage;
 	if ((double) 1/columnRes == 0) { 
 		Column_Power = 1e-6;
 	} else if (columnRes == 0) {
