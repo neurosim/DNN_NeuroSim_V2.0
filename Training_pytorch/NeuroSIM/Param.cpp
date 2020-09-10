@@ -124,7 +124,7 @@ Param::Param() {
 	
 	numColMuxed = 8;                    // How many columns share 1 ADC (for eNVM and FeFET) or parallel SRAM
 	levelOutput = 64;                   // # of levels of the multilevelSenseAmp output, should be in 2^N forms; e.g. 32 levels --> 5-bit ADC
-	cellBit = 7;                        // precision of memory device 
+	cellBit = 5;                        // precision of memory device 
 	
 	/*** parameters for SRAM ***/
 	heightInFeatureSizeSRAM = 8;        // SRAM Cell height in feature size
