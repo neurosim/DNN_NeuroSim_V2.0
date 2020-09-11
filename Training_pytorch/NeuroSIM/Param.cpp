@@ -144,8 +144,8 @@ Param::Param() {
 	resistanceOff = 100e3*10;           // Roff resistance at Vr in the reported measurement dat (need to recalculate below if considering the nonlinearity)
 	maxConductance = (double) 1/resistanceOn;
 	minConductance = (double) 1/resistanceOff;
-	maxNumLevelLTP = 128;	            // Maximum number of conductance states during LTP or weight increase
-	maxNumLevelLTD = 128;	            // Maximum number of conductance states during LTD or weight decrease
+	maxNumLevelLTP = 32;	            // Maximum number of conductance states during LTP or weight increase
+	maxNumLevelLTD = 32;	            // Maximum number of conductance states during LTD or weight decrease
 	gateCapFeFET = 2.1717e-18;	        // Gate capacitance of FeFET (F)
 	writeVoltage = 4;
 	writePulseWidth = 50e-9;
