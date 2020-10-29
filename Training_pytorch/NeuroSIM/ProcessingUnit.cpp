@@ -168,6 +168,7 @@ void ProcessingUnitInitialize(SubArray *& subArray, InputParameter& inputParamet
 	subArray->numCellPerSynapse = param->numColPerSynapse;
 	subArray->numReadPulseBP = 8;
 	subArray->activityBPColRead = 0.5;
+	subArray->spikingMode = NONSPIKING;
 	
 	int numRow = param->numRowSubArray;
 	int numCol = param->numColSubArray;
