@@ -11,7 +11,7 @@ This V2.0 introduces **_estimation for on-chip training compute-in-memory (CIM) 
 2. Introduce more non-ideal properties of synaptic devices (in addition to V1.1):
    nonlinearity and asysmmetry, cycle-to-cycle and device-to-device variation in weight-update.
 ```
-**_For estimation of inference engine, please visit released V1.2 [DNN+NeuroSim V1.2](https://github.com/neurosim/DNN_NeuroSim_V1.2)_**
+**_For estimation of inference engine, please visit released V1.3 [DNN+NeuroSim V1.3](https://github.com/neurosim/DNN_NeuroSim_V1.3)_**
 
 **_For improved version of on-chip training accelerator with more design options, please visit released V2.1 [DNN+NeuroSim V2.1](https://github.com/neurosim/DNN_NeuroSim_V2.1)_**
 
